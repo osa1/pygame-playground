@@ -17,9 +17,9 @@ class Vector:
             self.y = y
 
     def __getitem__(self, key):
-        if key == 1:
+        if key == 0:
             return self.x
-        elif key == 2:
+        elif key == 1:
             return self.y
         raise IndexError("Invalid subscript.")
 
@@ -34,6 +34,10 @@ class Vector:
     def __mul__(self, r):
         """Vektorun bir skaler buyuklukle carpilmasi durumu."""
         return Vector(self[0]*r, self[1]*r)
+
+    def __div__(self, r):
+        """Vektorun bir skaler buyuklukle bolunmesi durumu."""
+        return Vector(self[0]/r, self[1]/r)
 
     @property
     def length(self):
@@ -67,6 +71,15 @@ def dot_product(v1, v2):
 def get_unit_vector(v):
     return Vector(v[0], v[1]).get_unit_vector()
 
+def r_vectorv(v, n):
+    """Bir vektor ve carptigi yuzeyin normalini alir.
+    Yansima vektorunu doner."""
+    if type(v) != Vector:
+        v = Vector(v)
+    if type(n) != Vector:
+        n = Vector(n)
+    return v - (n*2*(v.dot_product(n))) 
+
 if __name__ == "__main__":
     v1 = Vector(3, 5)
     print v1[0]
@@ -79,3 +92,4 @@ if __name__ == "__main__":
     print v1.dot_product(v2)
     print v1.cross_product(v2)
     print v1.get_unit_vector()
+    print r_vectorv([-1, -1], [-1, 0])
