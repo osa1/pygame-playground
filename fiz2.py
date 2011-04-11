@@ -28,6 +28,7 @@ SCREENX = 500
 SCREENY = 500
 UZUNLUK = 150
 BEYAZ = (255, 255, 255) 
+YARICAP = 5
 
 def _(v):
     """
@@ -44,7 +45,7 @@ def pyd(v):
     return [v[0]-SCREENX/2, SCREENY/2-v[1]]
 
 konumlar = [[200, 200]]
-hizlar = [[1, 1]]
+hizlar = [[3, 3]]
 
 
 screen = pygame.display.set_mode((SCREENX, SCREENY), 0, 32)
@@ -60,13 +61,13 @@ vektorler = dik_vektor(r)  # [[x1, y1], [x2, y2]]
 
 
 font = pygame.font.SysFont('Consolas', 15)
-p1t = font.render('p1', True, (0, 0, 0), (255, 255, 255))
-p2t = font.render('p2', True, (0, 0, 0), (255, 255, 255))
-p3t = font.render('p3', True, (0, 0, 0), (255, 255, 255))
-p4t = font.render('p4', True, (0, 0, 0), (255, 255, 255))
+p1t = font.render('p1', True, (0, 0, 0), BEYAZ)
+p2t = font.render('p2', True, (0, 0, 0), BEYAZ)
+p3t = font.render('p3', True, (0, 0, 0), BEYAZ)
+p4t = font.render('p4', True, (0, 0, 0), BEYAZ)
 while running:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
             running = False
         if event.type == pygame.MOUSEMOTION:
             r = [event.pos[0]-pos, -event.pos[1]+pos]
@@ -105,16 +106,6 @@ while running:
     screen.blit(p3t, m3d)
     screen.blit(p4t, m4d)
 
-    # yuzeylerin normal birim vektorleri
-    p1n = ara_birim_vektor(m1, (0, 0))
-    p2n = -p1n[0], -p1n[1]
-    p3n = p1n[1], -p1n[0]
-    p4n = -p1n[1], p1n[0]
-    p1n = Vector(p1n)
-    p2n = Vector(p2n)
-    p3n = Vector(p3n)
-    p4n = Vector(p4n)
-
     #screen.blit(p1t, p1)
     #screen.blit(p2t, p2)
     #screen.blit(p3t, p3)
@@ -131,15 +122,49 @@ while running:
 
     # toplar
     for konum, hiz in zip(konumlar, hizlar):
-        vm1 = Vector(pyd(konum)) - Vector(m1)
+
+        if konum[0] < 0:
+            konum[0] += SCREENX
+        elif konum[0] > SCREENX:
+            konum[0] -= SCREENX
+        if konum[1] < 0:
+            konum[1] += SCREENY
+        elif konum[1] > SCREENY:
+            konum[1] -= SCREENY
+               
+        # top konumundan duvarin ortasina kadar olan vektorler
+        konum_vektor = Vector(pyd(konum))
+        vm1 = konum_vektor - Vector(m1)
+        vm2 = konum_vektor - Vector(m2)
+        vm3 = konum_vektor - Vector(m3)
+        vm4 = konum_vektor - Vector(m4)
         #print (vm1*vm1.dot_product(m1b)).length
         #print vm1
-        if (vm1*vm1.dot_product(m1b)).length < 5:
-            print "carpisma1",
-            print pyd(konum)
+        if abs((vm1.get_unit_vector()*vm1.dot_product(m1b)).length) < 5:
+            v_hiz = Vector((hiz[0], -hiz[1]))
+            ref_v = v_hiz - m1b*2*(v_hiz.dot_product(m1b))
+            hiz[0] = ref_v[0]
+            hiz[1] = -ref_v[1]
+        if abs((vm2.get_unit_vector()*vm2.dot_product(m2b)).length) < 5:
+            v_hiz = Vector((hiz[0], -hiz[1]))
+            ref_v = v_hiz - m2b*2*(v_hiz.dot_product(m2b))
+            hiz[0] = ref_v[0]
+            hiz[1] = -ref_v[1]
+            pass
+        if abs((vm3.get_unit_vector()*vm3.dot_product(m3b)).length) < 5:
+            v_hiz = Vector((hiz[0], -hiz[1]))
+            ref_v = v_hiz - m3b*2*(v_hiz.dot_product(m3b))
+            hiz[0] = ref_v[0]
+            hiz[1] = -ref_v[1]
+            pass
+        if abs((vm4.get_unit_vector()*vm4.dot_product(m4b)).length) < 5:
+            v_hiz = Vector((hiz[0], -hiz[1]))
+            ref_v = v_hiz - m4b*2*(v_hiz.dot_product(m4b))
+            hiz[0] = ref_v[0]
+            hiz[1] = -ref_v[1]
         konum[0] += hiz[0]
         konum[1] += hiz[1]
-        pygame.draw.circle(screen, BEYAZ, konum, 5)
+        pygame.draw.circle(screen, BEYAZ, konum, YARICAP)
 
 
     clock.tick(50)
