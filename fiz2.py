@@ -37,8 +37,14 @@ def _(v):
     """
     return v[0]+SCREENX/2, SCREENY/2-v[1]
 
+def pyd(v):
+    """
+    Pygame duzleminden normal kartezyen duzeleme donustur."
+    """
+    return [v[0]-SCREENX/2, SCREENY/2-v[1]]
+
 konumlar = [[200, 200]]
-hizlar = [[3, 5]]
+hizlar = [[1, 1]]
 
 
 screen = pygame.display.set_mode((SCREENX, SCREENY), 0, 32)
@@ -76,6 +82,13 @@ while running:
     m2 = vektorler[1][0]*UZUNLUK, vektorler[1][1]*UZUNLUK
     m3 = -r[0]*UZUNLUK, -r[1]*UZUNLUK
     m4 = r[0]*UZUNLUK, r[1]*UZUNLUK
+
+    # kenarlarin ortalarindan merkeze birim vektorler
+    m1b = ara_birim_vektor(m1, (0, 0))
+    m2b = ara_birim_vektor(m2, (0, 0))
+    m3b = ara_birim_vektor(m3, (0, 0))
+    m4b = ara_birim_vektor(m4, (0, 0))
+
     m1d = _(m1)
     m2d = _(m2)
     m3d = _(m3)
@@ -118,15 +131,12 @@ while running:
 
     # toplar
     for konum, hiz in zip(konumlar, hizlar):
-        print (p1n*(p1n.dot_product((m4[0]-konum[0], m4[1]-konum[1])))).length
-        if (p1n*(p1n.dot_product((m1[0]-konum[0], m1[1]-konum[1])))).length < 5:
-            print "cakisma"
-        if (p2n*(p2n.dot_product((m2[0]-konum[0], m2[1]-konum[1])))).length < 5:
-            print "cakisma"
-        if (p2n*(p2n.dot_product((m3[0]-konum[0], m3[1]-konum[1])))).length < 5:
-            print "cakisma"
-        if (p2n*(p2n.dot_product((m4[0]-konum[0], m4[1]-konum[1])))).length < 5:
-            print "cakisma"
+        vm1 = Vector(pyd(konum)) - Vector(m1)
+        #print (vm1*vm1.dot_product(m1b)).length
+        #print vm1
+        if (vm1*vm1.dot_product(m1b)).length < 5:
+            print "carpisma1",
+            print pyd(konum)
         konum[0] += hiz[0]
         konum[1] += hiz[1]
         pygame.draw.circle(screen, BEYAZ, konum, 5)
