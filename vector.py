@@ -53,17 +53,11 @@ class Vector:
     def dot_product(self, v):
         return self[0] * v[0] + self[1] * v[1]
 
-    def cross_product(self, v):
-        return Vector(self[0] * v[0], self[1] * v[1])
-
     def get_unit_vector(self):
         return Vector(self.x / self.length, self.y / self.length)
 
     def dik_vektor(self):
         return [[self[1], -self[0]], [-self[1], self[0]]]
-
-def cross_product(v1, v2):
-    return Vector(v1[0] * v2[0], v1[1] * v2[1])
 
 def dot_product(v1, v2):
     return v1[0] * v2[0] + v1[1] * v2[1]

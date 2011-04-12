@@ -44,8 +44,8 @@ def pyd(v):
     """
     return [v[0]-SCREENX/2, SCREENY/2-v[1]]
 
-konumlar = [[200, 200]]
-hizlar = [[3, 3]]
+konumlar = [[200, 200], [300, 300], [300, 300],[350, 350]]
+hizlar = [[3, 3], [2, 0], [1, 0], [0, 1]]
 
 
 screen = pygame.display.set_mode((SCREENX, SCREENY), 0, 32)
@@ -65,6 +65,8 @@ p1t = font.render('p1', True, (0, 0, 0), BEYAZ)
 p2t = font.render('p2', True, (0, 0, 0), BEYAZ)
 p3t = font.render('p3', True, (0, 0, 0), BEYAZ)
 p4t = font.render('p4', True, (0, 0, 0), BEYAZ)
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
@@ -140,24 +142,22 @@ while running:
         vm4 = konum_vektor - Vector(m4)
         #print (vm1*vm1.dot_product(m1b)).length
         #print vm1
-        if abs((vm1.get_unit_vector()*vm1.dot_product(m1b)).length) < 5:
+        if abs((m1b*vm1.dot_product(m1b)).length) < 5:
             v_hiz = Vector((hiz[0], -hiz[1]))
             ref_v = v_hiz - m1b*2*(v_hiz.dot_product(m1b))
             hiz[0] = ref_v[0]
             hiz[1] = -ref_v[1]
-        if abs((vm2.get_unit_vector()*vm2.dot_product(m2b)).length) < 5:
+        if abs((m2b*vm2.dot_product(m2b)).length) < 5:
             v_hiz = Vector((hiz[0], -hiz[1]))
             ref_v = v_hiz - m2b*2*(v_hiz.dot_product(m2b))
             hiz[0] = ref_v[0]
             hiz[1] = -ref_v[1]
-            pass
-        if abs((vm3.get_unit_vector()*vm3.dot_product(m3b)).length) < 5:
+        if abs((m3b*vm3.dot_product(m3b)).length) < 5:
             v_hiz = Vector((hiz[0], -hiz[1]))
             ref_v = v_hiz - m3b*2*(v_hiz.dot_product(m3b))
             hiz[0] = ref_v[0]
             hiz[1] = -ref_v[1]
-            pass
-        if abs((vm4.get_unit_vector()*vm4.dot_product(m4b)).length) < 5:
+        if abs((m4b*vm4.dot_product(m4b)).length) < 5:
             v_hiz = Vector((hiz[0], -hiz[1]))
             ref_v = v_hiz - m4b*2*(v_hiz.dot_product(m4b))
             hiz[0] = ref_v[0]
@@ -167,5 +167,5 @@ while running:
         pygame.draw.circle(screen, BEYAZ, konum, YARICAP)
 
 
-    clock.tick(50)
+    clock.tick(60)
     pygame.display.flip()
