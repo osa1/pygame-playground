@@ -46,6 +46,7 @@ def pyd(v):
 
 konumlar = [[200, 200], [300, 300], [300, 300],[350, 350]]
 hizlar = [[3, 3], [2, 0], [1, 0], [0, 1]]
+time_passed = 0
 
 
 screen = pygame.display.set_mode((SCREENX, SCREENY), 0, 32)
@@ -125,6 +126,7 @@ while running:
     # toplar
     for konum, hiz in zip(konumlar, hizlar):
 
+        hiz[1] += time_passed*0.03
         if konum[0] < 0:
             konum[0] += SCREENX
         elif konum[0] > SCREENX:
@@ -164,8 +166,9 @@ while running:
             hiz[1] = -ref_v[1]
         konum[0] += hiz[0]
         konum[1] += hiz[1]
-        pygame.draw.circle(screen, BEYAZ, konum, YARICAP)
+        #pygame.draw.circle(screen, BEYAZ, konum, YARICAP)
+        pygame.draw.circle(screen, BEYAZ, (int(konum[0]), int(konum[1])), YARICAP)
 
 
-    clock.tick(60)
+    time_passed = clock.tick(60)
     pygame.display.flip()
