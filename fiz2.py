@@ -10,24 +10,25 @@ def birim_vektorlestir(v):
     uzunluk = sqrt(v[0]**2 + v[1]**2)
     return [v[0]/uzunluk, v[1]/uzunluk]
 
-def dik_vektor(v):
+def prep_v(v):
     """
     v vektorune dik 2 vektoru doner
     [[x1, y1], [x2, y2]] seklinde
     """
     return [[v[1], -v[0]], [-v[1], v[0]]]
 
-def ara_birim_vektor(p1, p2):
+def norm_v(p1, p2):
     """
     p1'den p2'ye dogru birim vektor olusturur.
+    normalized vector from p1 to p2
     """
     return Vector(p2[0]-p1[0], p2[1]-p1[1]).get_unit_vector()
 
 
 SCREENX = 500
 SCREENY = 500
-UZUNLUK = 150
-BEYAZ = (255, 255, 255) 
+LEN = 150
+WHITE = (255, 255, 255) 
 YARICAP = 5
 
 def _(v):
@@ -44,8 +45,8 @@ def pyd(v):
     """
     return [v[0]-SCREENX/2, SCREENY/2-v[1]]
 
-konumlar = [[200, 200], [300, 300], [300, 300],[350, 350]]
-hizlar = [[3, 3], [2, 0], [1, 0], [0, 1]]
+places = [[200, 200], [300, 300], [300, 300],[350, 350]]
+vels = [[3, 3], [2, 0], [1, 0], [0, 1]]
 time_passed = 0
 
 
@@ -54,18 +55,18 @@ clock = pygame.time.Clock()
 
 pos = SCREENX/2
 running = 1
-vektorler = [[0, 0], [0, 0]]
+vectors = [[0, 0], [0, 0]]
 r = [SCREENX/2-pos, -SCREENY/2-10+pos]
 r = birim_vektorlestir(r)
-vektorler = dik_vektor(r)  # [[x1, y1], [x2, y2]]
+vectors = prep_v(r)  # [[x1, y1], [x2, y2]]
 
 
 
 font = pygame.font.SysFont('Consolas', 15)
-p1t = font.render('p1', True, (0, 0, 0), BEYAZ)
-p2t = font.render('p2', True, (0, 0, 0), BEYAZ)
-p3t = font.render('p3', True, (0, 0, 0), BEYAZ)
-p4t = font.render('p4', True, (0, 0, 0), BEYAZ)
+p1t = font.render('m1', True, (0, 0, 0), WHITE)
+p2t = font.render('m2', True, (0, 0, 0), WHITE)
+p3t = font.render('m3', True, (0, 0, 0), WHITE)
+p4t = font.render('m4', True, (0, 0, 0), WHITE)
 
 
 while running:
@@ -76,22 +77,22 @@ while running:
             r = [event.pos[0]-pos, -event.pos[1]+pos]
             #print r
             r = birim_vektorlestir(r)
-            vektorler = dik_vektor(r)  # [[x1, y1], [x2, y2]]
+            vectors = prep_v(r)  # [[x1, y1], [x2, y2]]
             #print  ">>",  r, "<<"  # [x, y]
 
     screen.fill((0, 0, 0))
 
     # yuzeylerin orta noktalari
-    m1 = vektorler[0][0]*UZUNLUK, vektorler[0][1]*UZUNLUK
-    m2 = vektorler[1][0]*UZUNLUK, vektorler[1][1]*UZUNLUK
-    m3 = -r[0]*UZUNLUK, -r[1]*UZUNLUK
-    m4 = r[0]*UZUNLUK, r[1]*UZUNLUK
+    m1 = vectors[0][0]*LEN, vectors[0][1]*LEN
+    m2 = vectors[1][0]*LEN, vectors[1][1]*LEN
+    m3 = -r[0]*LEN, -r[1]*LEN
+    m4 = r[0]*LEN, r[1]*LEN
 
-    # kenarlarin ortalarindan merkeze birim vektorler
-    m1b = ara_birim_vektor(m1, (0, 0))
-    m2b = ara_birim_vektor(m2, (0, 0))
-    m3b = ara_birim_vektor(m3, (0, 0))
-    m4b = ara_birim_vektor(m4, (0, 0))
+    # kenarlarin ortalarindan merkeze birim vectors
+    m1b = norm_v(m1, (0, 0))
+    m2b = norm_v(m2, (0, 0))
+    m3b = norm_v(m3, (0, 0))
+    m4b = norm_v(m4, (0, 0))
 
     m1d = _(m1)
     m2d = _(m2)
@@ -114,60 +115,62 @@ while running:
     #screen.blit(p3t, p3)
     #screen.blit(p4t, p4)
 
-    pygame.draw.aaline(screen, BEYAZ,
+    pygame.draw.aaline(screen, WHITE,
             p1, p2)
-    pygame.draw.aaline(screen, BEYAZ,
+    pygame.draw.aaline(screen, WHITE,
             p2, p3)
-    pygame.draw.aaline(screen, BEYAZ,
+    pygame.draw.aaline(screen, WHITE,
             p3, p4)
-    pygame.draw.aaline(screen, BEYAZ,
+    pygame.draw.aaline(screen, WHITE,
             p4, p1)
 
     # toplar
-    for konum, hiz in zip(konumlar, hizlar):
+    for p, vel in zip(places, vels):
 
-        hiz[1] += time_passed*0.03
-        if konum[0] < 0:
-            konum[0] += SCREENX
-        elif konum[0] > SCREENX:
-            konum[0] -= SCREENX
-        if konum[1] < 0:
-            konum[1] += SCREENY
-        elif konum[1] > SCREENY:
-            konum[1] -= SCREENY
+        # uncomment this for gravity
+        #vel[1] += time_passed*0.02
+
+        if p[0] < 0:
+            p[0] += SCREENX
+        elif p[0] > SCREENX:
+            p[0] -= SCREENX
+        if p[1] < 0:
+            p[1] += SCREENY
+        elif p[1] > SCREENY:
+            p[1] -= SCREENY
                
-        # top konumundan duvarin ortasina kadar olan vektorler
-        konum_vektor = Vector(pyd(konum))
-        vm1 = konum_vektor - Vector(m1)
-        vm2 = konum_vektor - Vector(m2)
-        vm3 = konum_vektor - Vector(m3)
-        vm4 = konum_vektor - Vector(m4)
+        # top pundan duvarin ortasina kadar olan vectors
+        p_vektor = Vector(pyd(p))
+        vm1 = p_vektor - Vector(m1)
+        vm2 = p_vektor - Vector(m2)
+        vm3 = p_vektor - Vector(m3)
+        vm4 = p_vektor - Vector(m4)
         #print (vm1*vm1.dot_product(m1b)).length
         #print vm1
         if abs((m1b*vm1.dot_product(m1b)).length) < 5:
-            v_hiz = Vector((hiz[0], -hiz[1]))
-            ref_v = v_hiz - m1b*2*(v_hiz.dot_product(m1b))
-            hiz[0] = ref_v[0]
-            hiz[1] = -ref_v[1]
+            v_vel = Vector((vel[0], -vel[1]))
+            ref_v = v_vel - m1b*2*(v_vel.dot_product(m1b))
+            vel[0] = ref_v[0]
+            vel[1] = -ref_v[1]
         if abs((m2b*vm2.dot_product(m2b)).length) < 5:
-            v_hiz = Vector((hiz[0], -hiz[1]))
-            ref_v = v_hiz - m2b*2*(v_hiz.dot_product(m2b))
-            hiz[0] = ref_v[0]
-            hiz[1] = -ref_v[1]
+            v_vel = Vector((vel[0], -vel[1]))
+            ref_v = v_vel - m2b*2*(v_vel.dot_product(m2b))
+            vel[0] = ref_v[0]
+            vel[1] = -ref_v[1]
         if abs((m3b*vm3.dot_product(m3b)).length) < 5:
-            v_hiz = Vector((hiz[0], -hiz[1]))
-            ref_v = v_hiz - m3b*2*(v_hiz.dot_product(m3b))
-            hiz[0] = ref_v[0]
-            hiz[1] = -ref_v[1]
+            v_vel = Vector((vel[0], -vel[1]))
+            ref_v = v_vel - m3b*2*(v_vel.dot_product(m3b))
+            vel[0] = ref_v[0]
+            vel[1] = -ref_v[1]
         if abs((m4b*vm4.dot_product(m4b)).length) < 5:
-            v_hiz = Vector((hiz[0], -hiz[1]))
-            ref_v = v_hiz - m4b*2*(v_hiz.dot_product(m4b))
-            hiz[0] = ref_v[0]
-            hiz[1] = -ref_v[1]
-        konum[0] += hiz[0]
-        konum[1] += hiz[1]
-        #pygame.draw.circle(screen, BEYAZ, konum, YARICAP)
-        pygame.draw.circle(screen, BEYAZ, (int(konum[0]), int(konum[1])), YARICAP)
+            v_vel = Vector((vel[0], -vel[1]))
+            ref_v = v_vel - m4b*2*(v_vel.dot_product(m4b))
+            vel[0] = ref_v[0]
+            vel[1] = -ref_v[1]
+        p[0] += vel[0]
+        p[1] += vel[1]
+        #pygame.draw.circle(screen, WHITE, p, YARICAP)
+        pygame.draw.circle(screen, WHITE, (int(p[0]), int(p[1])), YARICAP)
 
 
     time_passed = clock.tick(60)
