@@ -27,7 +27,7 @@ def run():
     game_state.key_listeners.append(game_menu.key_pressed)
 
     score = 0
-    score_font = pygame.font.SysFont("Consolas", 13, (255, 255, 255))
+    score_font = pygame.font.SysFont("Monospace", 13, (255, 255, 255))
 
     while True:
         pressed = pygame.key.get_pressed()

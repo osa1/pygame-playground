@@ -33,7 +33,7 @@ class FadingText:
 
 class Menu:
     def __init__(self):
-        self.font = pygame.font.SysFont("Monaco", 40)
+        self.font = pygame.font.SysFont("Monospace", 40)
 
         self.create_menu()
         self.selected = 0
