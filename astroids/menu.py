@@ -48,7 +48,7 @@ class Menu:
                 self.about,
                 self.exit]
 
-    def draw(self, surface, maxx, maxy):
+    def draw(self, surface):
         total_height = 0
         surfaces = []
         for i in xrange(len(self.options)):
@@ -61,10 +61,10 @@ class Menu:
             total_height += s.get_height()
 
         spacer = 10
-        start = maxy/2 - total_height/2 - spacer
+        start = surface.get_height()/2 - total_height/2 - spacer
 
         for s in surfaces:
-            surface.blit(s, (maxx/2-s.get_width()/2, start+spacer))
+            surface.blit(s, (surface.get_width()/2-s.get_width()/2, start+spacer))
             start += s.get_height()
 
     def key_pressed(self, pressed):
@@ -82,3 +82,14 @@ class Menu:
                 game_state.menu_visible = False
                 game_state.start_game()
                 print "ok"
+            elif self.options[self.selected] == self.exit:
+                game_state.game_running = False
+        elif pressed[pygame.K_ESCAPE]:
+            if game_state.menu_visible:
+                game_state.running = True
+                game_state.menu_visible = False
+            else:
+                game_state.running = False
+                game_state.menu_visible = True
+
+        

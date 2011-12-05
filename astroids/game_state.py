@@ -4,7 +4,7 @@ import pygame
 
 screenx, screeny = 700, 700
 
-screen = pygame.display.set_mode((screenx, screeny), 0, 32)
+screen = pygame.display.set_mode((screenx, screeny), pygame.RESIZABLE, 32)
 clock = pygame.time.Clock()
 
 key_listeners = []
@@ -15,6 +15,7 @@ create_ship = False
 
 running = True
 menu_visible = True
+game_running = True
 
 ticks = 0
 

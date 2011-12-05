@@ -15,9 +15,9 @@ def detect_collisions():
 
 def clean_astroids():
     for a in game_state.astroids[:]:
-        if a.posx - 2*a.radius_range > game_state.screenx or \
+        if a.posx - 2*a.radius_range > game_state.screen.get_width() or \
                 a.posx + 2*a.radius_range < 0 or \
-                a.posy - 2*a.radius_range > game_state.screeny or \
+                a.posy - 2*a.radius_range > game_state.screen.get_height() or \
                 a.posy + 2*a.radius_range < 0:
                     game_state.astroids.remove(a)
 
@@ -29,7 +29,7 @@ def run():
     score = 0
     score_font = pygame.font.SysFont("Monospace", 13, (255, 255, 255))
 
-    while True:
+    while game_state.game_running:
         pressed = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -38,6 +38,8 @@ def run():
                     event.type == pygame.KEYUP:
                 for listener in game_state.key_listeners:
                     listener(pressed)
+            elif event.type == pygame.VIDEORESIZE:
+                pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE, 32)
         
         for listener in game_state.repeat_key_listeners:
             listener(pressed)
@@ -50,23 +52,29 @@ def run():
             game_state.create_ship = False
 
         if game_state.menu_visible:
-            game_menu.draw(game_state.screen, game_state.screenx, game_state.screeny)
+            game_menu.draw(game_state.screen)
 
         if game_state.running:
             for ast in game_state.astroids:
                 ast.update()
-                ast.draw(game_state.screen)
+                #ast.draw(game_state.screen)
             if game_state.ship:
                 score += float(game_state.ticks) / 1000
                 score_text = score_font.render(str(score), 1, (255, 255, 255))
                 game_state.screen.blit(score_text, (10, 10))
 
                 game_state.ship.update()
-                game_state.ship.draw(game_state.screen)
+                #game_state.ship.draw(game_state.screen)
+
+        for ast in game_state.astroids:
+            ast.draw(game_state.screen)
+        if game_state.ship:
+            game_state.ship.draw(game_state.screen)
 
         if detect_collisions():
-            game_state.running = False
             game_state.menu_visible = True
+            game_state.repeat_key_listeners.remove(game_state.ship.key_pressed)
+            game_state.ship = None
             score = 0
 
         clean_astroids()

@@ -6,7 +6,8 @@ import game_state
 # TODO: general Entity class
 
 class Ship:
-    def __init__(self, posx=game_state.screenx/2, posy=game_state.screeny/2):
+    def __init__(self, posx=game_state.screen.get_width()/2,
+            posy=game_state.screen.get_height()/2):
         self.posx = posx
         self.posy = posy
 
@@ -135,8 +136,8 @@ def generate_random_astroid():
             radius=radius)
 
     # TODO
-    a.posx = random.choice((-a.radius_range, game_state.screenx+a.radius_range))
-    a.posy = random.choice((-a.radius_range, game_state.screeny+a.radius_range))
+    a.posx = random.choice((-a.radius_range, game_state.screen.get_width()+a.radius_range))
+    a.posy = random.choice((-a.radius_range, game_state.screen.get_height()+a.radius_range))
 
     a.vx = random.randint(10, 100)
     if a.posx > 0:
